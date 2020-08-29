@@ -1,0 +1,26 @@
+{
+  "name": "css3-color-picker",
+  "version": "0.1.0",
+  "description": "A UI component for picking color swatches",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "python -m SimpleHTTPServer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chadwithuhc/css3-color-picker.git"
+  },
+  "keywords": [
+    "css",
+    "css3",
+    "color",
+    "picker"
+  ],
+  "author": "chadwithuhc <chad@cmfolio.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chadwithuhc/css3-color-picker/issues"
+  },
+  "homepage": "https://github.com/chadwithuhc/css3-color-picker#readme"
+}
