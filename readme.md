@@ -6,7 +6,11 @@
 
 ```js
 const colorPicker = new CSS3ColorPicker({
-  el: '#colorPicker', // css selector or element
+  el: '#colorPicker', // css selector OR HTMLElement
+  autoRender: true, // render when we instantiate
+  swatchSize: 1, // number
+  swatchGap: 0, // number
+  sizingUnit: 'em', // css unit size
 })
 ```
 
