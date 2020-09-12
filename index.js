@@ -156,8 +156,12 @@
     swatchSize: 1, // number
     swatchGap: 0, // number
     sizingUnit: 'rem', // css unit size
+    buttonText: 'Select Color',
     defaultColor: null, // default color to start
   }
+
+  const baseClassName = 'css3-color-picker' // css3-color-picker__color-swatch
+  const createClassName = (className) => `${baseClassName}__${className}`
 
   class CSS3ColorPicker {
 
@@ -225,18 +229,21 @@
       const { swatchSize, sizingUnit } = this.options
       const size = swatchSize + sizingUnit
       return this.colorsets.css3.map(color => `
-        <span
-          class="css3-color-swatch"
-          style="display:inline-block;background-color:${color.name};width:${size};height:${size};" onClick="${this.getUid()}.setColorSwatch('${color.name}')"></span>
+        <button
+          class="${createClassName('color-swatch')}"
+          style="display:inline-block;background-color:${color.name};width:${size};height:${size};"
+          onClick="${this.getUid()}.setColorSwatch('${color.name}')">
+            <span class="${createClassName('color-swatch-name')}">${color.name}</span>
+        </button>
       `)
     }
 
     render() {
-      const { swatchGap, sizingUnit } = this.options
+      const { swatchGap, sizingUnit, buttonText } = this.options
       const { showColorSwatches, selectedColor } = this.state
 
       const gapSize = swatchGap + sizingUnit
-      const smallSwatchSize = '0.6rem'
+      const smallSwatchSize = '1rem'
       const colorSwatchDisplay = showColorSwatches ? 'flex' : 'none'
       const currentColor = selectedColor || 'transparent'
 
@@ -244,9 +251,15 @@
       global[this.getUid()] = this
 
       this.$el.innerHTML = `
-        <div>
-          <button onClick="${this.getUid()}.toggleColorSwatches()">Select Color <span style="display:inline-block;width:${smallSwatchSize};height:${smallSwatchSize};background-color:${currentColor};border:solid 1px grey"></span></button>
-          <div style="display:${colorSwatchDisplay};flex-wrap:wrap;gap:${gapSize}">
+        <div class="${baseClassName}">
+          <button
+            class="${createClassName('select-button')}"
+            onClick="${this.getUid()}.toggleColorSwatches()">
+              ${buttonText} <span class="${createClassName('selected-color-swatch')}" style="display:inline-block;width:${smallSwatchSize};height:${smallSwatchSize};background-color:${currentColor};">
+                <span class="${createClassName('selected-color-swatch-name')}">${currentColor}</span>
+              </span>
+          </button>
+          <div class="${createClassName('color-swatch-wrapper')}" style="display:${colorSwatchDisplay};flex-wrap:wrap;gap:${gapSize}">
             ${this.getSwatches().join(``)}
           </div>
         </div>
