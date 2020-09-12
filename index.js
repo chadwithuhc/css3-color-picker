@@ -156,13 +156,14 @@
     swatchSize: 1, // number
     swatchGap: 0, // number
     sizingUnit: 'rem', // css unit size
+    defaultColor: null, // default color to start
   }
 
   class CSS3ColorPicker {
 
     constructor(options = {}) {
       this.options = { ...defaultOptions, ...options }
-      const { el, autoRender, sizingUnit } = this.options
+      const { el, autoRender, sizingUnit, defaultColor } = this.options
       let $el
 
       if (!el) {
@@ -178,12 +179,15 @@
 
       this.$el = $el
 
+      this.uid = Math.random().toString(36).substr(2, 9)
+
       // validate data
       this.options.swatchSize = Math.max(0, this.options.swatchSize)
       this.options.swatchGap = Math.max(0, this.options.swatchGap)
       this.options.sizingUnit = /^r?em|px$/.test(sizingUnit) ? sizingUnit : defaultOptions.sizingUnit
 
-      console.log('CSS3ColorPicker instance', this)
+      // set initial state
+      this.state.selectedColor = defaultColor || this.state.selectedColor
 
       if (autoRender) {
         this.render()
@@ -199,8 +203,10 @@
       css3: css3Colors
     }
 
-    destroy() {
-      
+    destroy() {}
+
+    getUid() {
+      return `css3ColorPickerInstance_${this.uid}`
     }
 
     toggleColorSwatches() {
@@ -221,7 +227,7 @@
       return this.colorsets.css3.map(color => `
         <span
           class="css3-color-swatch"
-          style="display:inline-block;background-color:${color.name};width:${size};height:${size};" onClick="css3PickerInstance.setColorSwatch('${color.name}')"></span>
+          style="display:inline-block;background-color:${color.name};width:${size};height:${size};" onClick="${this.getUid()}.setColorSwatch('${color.name}')"></span>
       `)
     }
 
@@ -234,12 +240,12 @@
       const colorSwatchDisplay = showColorSwatches ? 'flex' : 'none'
       const currentColor = selectedColor || 'transparent'
 
-      // makes `css3PickerInstance.methods()` available for `onClick=""`
-      global.css3PickerInstance = this
+      // makes instance available for `onClick=""`
+      global[this.getUid()] = this
 
       this.$el.innerHTML = `
         <div>
-          <button onClick="css3PickerInstance.toggleColorSwatches()">Select Color <span style="display:inline-block;width:${smallSwatchSize};height:${smallSwatchSize};background-color:${currentColor};border:solid 1px grey"></span></button>
+          <button onClick="${this.getUid()}.toggleColorSwatches()">Select Color <span style="display:inline-block;width:${smallSwatchSize};height:${smallSwatchSize};background-color:${currentColor};border:solid 1px grey"></span></button>
           <div style="display:${colorSwatchDisplay};flex-wrap:wrap;gap:${gapSize}">
             ${this.getSwatches().join(``)}
           </div>
