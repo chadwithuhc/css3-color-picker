@@ -190,20 +190,61 @@
       }
     }
 
+    state = {
+      showColorSwatches: false,
+      selectedColor: null
+    }
+
     colorsets = {
       css3: css3Colors
+    }
+
+    destroy() {
+      
+    }
+
+    toggleColorSwatches() {
+      this.state.showColorSwatches = !this.state.showColorSwatches
+      this.render()
+    }
+
+    setColorSwatch(colorSwatch) {
+      this.state.selectedColor = colorSwatch
+      this.state.showColorSwatches = false
+      this.options.onChange(colorSwatch)
+      this.render()
     }
 
     getSwatches() {
       const { swatchSize, sizingUnit } = this.options
       const size = swatchSize + sizingUnit
-      return this.colorsets.css3.map(color => `<span class="css3-color-swatch" style="display:inline-block;background-color:${color.name};width:${size};height:${size};"></span>`)
+      return this.colorsets.css3.map(color => `
+        <span
+          class="css3-color-swatch"
+          style="display:inline-block;background-color:${color.name};width:${size};height:${size};" onClick="css3PickerInstance.setColorSwatch('${color.name}')"></span>
+      `)
     }
 
     render() {
       const { swatchGap, sizingUnit } = this.options
+      const { showColorSwatches, selectedColor } = this.state
+
       const gapSize = swatchGap + sizingUnit
-      this.$el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:${gapSize}">${this.getSwatches().join(``)}</div>`
+      const smallSwatchSize = '0.6rem'
+      const colorSwatchDisplay = showColorSwatches ? 'flex' : 'none'
+      const currentColor = selectedColor || 'transparent'
+
+      // makes `css3PickerInstance.methods()` available for `onClick=""`
+      global.css3PickerInstance = this
+
+      this.$el.innerHTML = `
+        <div>
+          <button onClick="css3PickerInstance.toggleColorSwatches()">Select Color <span style="display:inline-block;width:${smallSwatchSize};height:${smallSwatchSize};background-color:${currentColor};border:solid 1px grey"></span></button>
+          <div style="display:${colorSwatchDisplay};flex-wrap:wrap;gap:${gapSize}">
+            ${this.getSwatches().join(``)}
+          </div>
+        </div>
+      `
     }
 
   }
